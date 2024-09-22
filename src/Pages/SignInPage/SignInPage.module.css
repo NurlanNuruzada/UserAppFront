@@ -1,0 +1,50 @@
+.signInModalBackdrop {
+  background-image: url(https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/default_left.dfc31853.svg),
+    url(https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/default_right.a801c0cc.svg);
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+  background-size: 368px, 368px;
+  background-position: left bottom, right bottom;
+  opacity: 1 !important;
+  background-color: rgb(20, 67, 85);
+  
+}
+.modalBody{
+  border-color: aquamarine 1px !important;
+}
+.header{
+  font-size: 19px;
+  text-align: center;
+}
+.modalBody{
+  width: 100%;
+}
+.SubmitButton{
+  width: 100%;
+  padding: 2px;
+  
+}
+.Main{
+  width: 290px!important;
+}
+.Input{
+  height: 30px;
+}
+.Container{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Control{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.passwordToggleIcon{
+  position: absolute !important;
+    cursor: pointer !important;
+    color: rgb(0, 123, 255) ;
+    height: 14px  !important;
+}

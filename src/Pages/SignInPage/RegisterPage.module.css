@@ -1,0 +1,8 @@
+.signInModalBackdrop {
+  background-image: url(https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/default_left.dfc31853.svg),
+    url(https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/default_right.a801c0cc.svg);
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+  background-size: 368px, 368px;
+  background-position: left bottom, right bottom;
+}
