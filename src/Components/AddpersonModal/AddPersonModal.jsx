@@ -33,7 +33,6 @@ const personValidationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email format").required("Email is required").max(256, "Email cannot exceed 256 characters"),
     age: Yup.number().required("Age is required").min(16, "Age must be at least 16").max(100, "Age cannot exceed 100"),
     specialNote: Yup.string().max(5000, "Special note cannot exceed 5000 characters"),
-    image: Yup.mixed().required("An image is required"), // Ensure image is required
 });
 const CustomField = ({ name, placeholder }) => {
     const { errors, touched } = useFormikContext();

@@ -25,7 +25,18 @@
     vertical-align: baseline !important;
     white-space: nowrap !important;
 }
-.Button2{
+
+.Image {
+    transition: transform 0.3s ease-in-out;
+}
+
+.Image:hover {
+    transform: scale(3);
+    align-items: center;
+    cursor: zoom-in;
+}
+
+.Button2 {
     background-color: #ff1100 !important;
     border: 1px solid transparent !important;
     border-radius: 3px !important;
@@ -52,7 +63,8 @@
     vertical-align: baseline !important;
     white-space: nowrap !important;
 }
-.Button3{
+
+.Button3 {
     background-color: #3f4140 !important;
     border: 1px solid transparent !important;
     border-radius: 3px !important;
@@ -79,6 +91,7 @@
     vertical-align: baseline !important;
     white-space: nowrap !important;
 }
+
 .Button:hover,
 .Button:focus {
     background-color: #07c !important;

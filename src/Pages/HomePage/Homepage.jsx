@@ -91,8 +91,8 @@ export default function Homepage() {
                         Previous
                     </Button>
                     <span style={{ color: 'rgb(0 86 146)' }}>Page {currentPage}</span>
-                    <Button className={Styles.Button} onClick={handleNextPage} disabled={currentPage === data?.maxPages}>
-                        Next
+                    <Button _disabled={true }  className={data?.maxPages ? Styles.Button3:Styles.Button} onClick={handleNextPage} disabled={currentPage === data?.maxPages}>
+                        Next 
                     </Button>
                 </Flex>
                 <Select
@@ -131,7 +131,7 @@ export default function Homepage() {
                     <tbody>
                         {data?.users?.map((person, index) => (
                             <tr key={person.id} onClick={() => openDetailModal(person)}>
-                                <td>{index}</td>
+                                <td>{index+1}</td>
                                 <td>{person.name}</td>
                                 <td>{person.surname}</td>
                                 <td>{person.fatherName}</td>

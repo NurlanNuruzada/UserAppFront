@@ -8,6 +8,7 @@ import { editPerson } from '../../Service/PersonService';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import DOMPurify from 'dompurify'; // Import DOMPurify
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 function PersonDetailModal({ isOpen, onClose, person }) {
     const [imageSrc, setImageSrc] = useState(null);
@@ -70,7 +71,7 @@ function PersonDetailModal({ isOpen, onClose, person }) {
         try {
             // Use the initial image source if no new file is selected
             const imageToUpload = file ? file : initialImageSrc;
-    
+
             await editPerson(person.id, editedPerson, imageToUpload);
             toast({
                 title: "Person updated.",
@@ -99,8 +100,10 @@ function PersonDetailModal({ isOpen, onClose, person }) {
             }
         }
     };
-    
 
+useEffect(()=>{
+    setIsEditing(false)
+},[isOpen])
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -113,6 +116,7 @@ function PersonDetailModal({ isOpen, onClose, person }) {
                             <div>
                                 {!isEditing &&
                                     <img
+                                        className={Styles.Image}
                                         src={imageSrc || initialImageSrc}
                                         alt={`${person?.name} ${person?.surname}`}
                                         style={{ maxWidth: '150px', maxHeight: '150px', marginRight: '20px' }}
@@ -140,9 +144,7 @@ function PersonDetailModal({ isOpen, onClose, person }) {
                                                         setFile(selectedFile);
                                                         const url = URL.createObjectURL(selectedFile);
                                                         setImageSrc(url);
-                                                    } else {
-                                                        setImageSrc(initialImageSrc);
-                                                    }
+                                                    } 
                                                 }}
                                                 placeholder="Add Image"
                                                 marginBottom="20px"

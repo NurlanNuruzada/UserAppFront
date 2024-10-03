@@ -27,7 +27,7 @@ export default function Routes() {
         },
         {
           path: "/CreateUser",
-          element: token ? <RegisterPage/>  : <Navigate to={"/Login"} /> ,
+          element:  <RegisterPage/>   ,
         },
       ],
     },

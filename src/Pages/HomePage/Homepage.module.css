@@ -83,3 +83,33 @@
     background-color: #0064bd !important;
     box-shadow: none !important;
 }
+.Button3:hover{
+    cursor:not-allowed !important;
+
+}
+.Button3 {
+    background-color: #6f7371f3 !important;
+    color: #e0e1e1;
+    border: 1px solid transparent !important;
+    border-radius: 3px !important;
+    box-sizing: border-box !important;
+    height: max-content !important;
+    width: max-content !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1.15385 !important;
+    margin: 0 !important;
+    outline: none !important;
+    padding: 5px 12px 7px !important;
+    position: relative !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    vertical-align: baseline !important;
+    white-space: nowrap !important;
+}
