@@ -20,6 +20,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createPerson } from '../../Service/PersonService';
 import { toast, ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 // Validation schema for Formik
 const personValidationSchema = Yup.object().shape({
@@ -47,6 +48,8 @@ const CustomField = ({ name, placeholder }) => {
 
 export default function AddPersonModal({ isOpen, onClose, filteredPersons, setFilteredPersons }) {
     const queryClient = useQueryClient()
+    const { token } = useSelector((x) => x.auth);
+
     const addPersonMutation = useMutation(createPerson, {
         onSuccess: (newPerson) => {
             queryClient.invalidateQueries('persons')
@@ -98,8 +101,9 @@ export default function AddPersonModal({ isOpen, onClose, filteredPersons, setFi
                         validationSchema={personValidationSchema}
                         onSubmit={(values, { setSubmitting }) => {
                             addPersonMutation.mutate({
-                                data: values, // Pass values as data
-                                file: values.image, // Pass the file
+                                data: values,
+                                file: values.image, 
+                                token
                             });
                             setSubmitting(false);
                         }}

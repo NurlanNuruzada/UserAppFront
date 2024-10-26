@@ -4,7 +4,7 @@ export function App() {
   return (
     <div>
       <Routes />
-      <ReactQueryDevtools initialIsOpen="false" position="bottom-right" />
+      {/* <ReactQueryDevtools initialIsOpen="false" position="bottom-right" /> */}
     </div>
   );
 }

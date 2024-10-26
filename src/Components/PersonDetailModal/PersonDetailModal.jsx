@@ -9,7 +9,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import DOMPurify from 'dompurify'; // Import DOMPurify
 import { faL } from '@fortawesome/free-solid-svg-icons';
-
+import { useSelector } from 'react-redux';
+import fallbackImageImport from '../../Images/Placehoder/elementor-placeholder-image.webp'
+import { ROLE_ADMIN } from '../../Helper/constants';
+import jwtDecode from 'jwt-decode';
 function PersonDetailModal({ isOpen, onClose, person }) {
     const [imageSrc, setImageSrc] = useState(null);
     const [initialImageSrc, setInitialImageSrc] = useState(null);
@@ -17,10 +20,23 @@ function PersonDetailModal({ isOpen, onClose, person }) {
     const [editedPerson, setEditedPerson] = useState(person);
     const [file, setFile] = useState(null);
     const [errorMessages, setErrorMessages] = useState([]);
-    const fallbackImage = "https://via.placeholder.com/150";
+    const fallbackImage = fallbackImageImport;
     const toast = useToast();
     const [isConfirmationOpen, setConfirmationOpen] = useState(false);
     const queryClient = useQueryClient();
+    const { token } = useSelector((x) => x.auth);
+    let decodedToken = null;
+    let Role = null;
+    if (token) {
+        try {
+            decodedToken = jwtDecode(token); // Decode the JWT
+            Role = decodedToken.Role; // Log the decoded token
+        } catch (error) {
+            console.error("Token decoding failed:", error);
+        }
+    } else {
+        console.log("No token found.");
+    }
 
     useEffect(() => {
         if (person) {
@@ -46,7 +62,9 @@ function PersonDetailModal({ isOpen, onClose, person }) {
 
     const handleDelete = async () => {
         try {
-            await httpClient.delete(`/api/Person/Delete?Id=${person.id}`);
+            await httpClient.delete(`/api/Person/Delete?Id=${person.id}`, {
+                headers: { Authorization: `Bearer ${token}` } 
+            });
             toast({
                 title: "Person deleted.",
                 status: "success",
@@ -72,7 +90,7 @@ function PersonDetailModal({ isOpen, onClose, person }) {
             // Use the initial image source if no new file is selected
             const imageToUpload = file ? file : initialImageSrc;
 
-            await editPerson(person.id, editedPerson, imageToUpload);
+            await editPerson(person.id, editedPerson, imageToUpload, token);
             toast({
                 title: "Person updated.",
                 status: "success",
@@ -81,6 +99,7 @@ function PersonDetailModal({ isOpen, onClose, person }) {
             });
             queryClient.invalidateQueries('persons');
             setIsEditing(false);
+            onClose()
         } catch (error) {
             console.error("Error updating person", error);
             if (error.response && error.response.data.errors) {
@@ -101,9 +120,9 @@ function PersonDetailModal({ isOpen, onClose, person }) {
         }
     };
 
-useEffect(()=>{
-    setIsEditing(false)
-},[isOpen])
+    useEffect(() => {
+        setIsEditing(false)
+    }, [isOpen])
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -144,7 +163,7 @@ useEffect(()=>{
                                                         setFile(selectedFile);
                                                         const url = URL.createObjectURL(selectedFile);
                                                         setImageSrc(url);
-                                                    } 
+                                                    }
                                                 }}
                                                 placeholder="Add Image"
                                                 marginBottom="20px"
@@ -248,14 +267,18 @@ useEffect(()=>{
                                     </Button>
                                 </>
                             ) : (
-                                <>
-                                    <Button className={Styles.Button3} colorScheme="blue" onClick={() => setIsEditing(true)}>
-                                        Edit
-                                    </Button>
-                                    <Button className={Styles.Button3} colorScheme="red" onClick={() => setConfirmationOpen(true)}>
-                                        Delete
-                                    </Button>
-                                </>
+                                <Flex gap={2}>
+                                    {Role === ROLE_ADMIN &&
+                                        <>
+                                            <Button className={Styles.Button3} colorScheme="blue" onClick={() => setIsEditing(true)}>
+                                                Edit
+                                            </Button>
+                                            <Button className={Styles.Button3} colorScheme="red" onClick={() => setConfirmationOpen(true)}>
+                                                Delete
+                                            </Button>
+                                        </>
+                                    }
+                                </Flex>
                             )}
                         </Flex>
                         <ConfirmationModal

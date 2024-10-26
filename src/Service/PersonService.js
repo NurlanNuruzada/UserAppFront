@@ -1,7 +1,7 @@
 import { httpClient } from "../Utils/HttpClient";
 
 // Create a new person
-export const createPerson = async ({ data, file }) => { // Use destructuring
+export const createPerson = async ({ data, file,token }) => { // Use destructuring
     const formData = new FormData();
 
     // Append each field directly to FormData
@@ -27,15 +27,16 @@ export const createPerson = async ({ data, file }) => { // Use destructuring
     return await httpClient.post('/api/Person/Create', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${token}`
         },
     });
 };
 
 
 // Edit an existing person
-export const editPerson = async (id, data, file) => {
+export const editPerson = async (id, data, file,token) => {
     const formData = new FormData();
-    
+
     // Append each field directly to FormData
     formData.append("id", id);
     formData.append("name", data.name);
@@ -54,6 +55,7 @@ export const editPerson = async (id, data, file) => {
     return await httpClient.put(`/api/Person/Edit`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${token}`
         },
     });
 };
@@ -61,18 +63,22 @@ export const editPerson = async (id, data, file) => {
 
 // Get all users with pagination
 // PersonService.js
-export const getAllUsers = async (currentPage, pageSize, searchQuery) => {
+export const getAllUsers = async (currentPage, pageSize, searchQuery, token) => {
     try {
-        const response = await httpClient.get(`/api/Person/Get?pageNumber=${currentPage}&pageSize=${pageSize}&searchQuery=${searchQuery}`);
-        return response.data; // If you're using axios, the data is inside response.data
+        const response = await httpClient.get(`/api/Person/Get?pageNumber=${currentPage}&pageSize=${pageSize}&searchQuery=${searchQuery}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
     } catch (error) {
         console.error("Error fetching users:", error);
-        throw error; // Handle the error properly
+        throw error;
     }
 };
 
 
 // Remove a person
-export const removePerson = async (id) => {
-    return await httpClient.delete(`/api/persons/remove/${id}`);
+export const removePerson = async (id, token) => {
+    return await httpClient.delete(`/api/persons/remove/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
 };

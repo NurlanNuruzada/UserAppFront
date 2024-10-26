@@ -5,6 +5,12 @@ import AddPersonModal from '../../Components/AddpersonModal/AddPersonModal';
 import PersonDetailModal from '../../Components/PersonDetailModal/PersonDetailModal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getAllUsers, createPerson } from '../../Service/PersonService';
+import { useDispatch } from 'react-redux';
+import { logoutAction } from '../../Redux/Slices/AuthSlice';
+import { useSelector } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { ROLE_ADMIN } from '../../Helper/constants';
+import { useNavigate } from 'react-router';
 
 export default function Homepage() {
     const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
@@ -14,12 +20,24 @@ export default function Homepage() {
     const [searchQuery, setSearchQuery] = useState(""); // For search query to trigger the request
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(25);
-
+    const dispatch = useDispatch();
     const queryClient = useQueryClient();
+    const { token } = useSelector((x) => x.auth);
+    let decodedToken = null;
+    let Role = null;
+    if (token) {
+        try {
+            decodedToken = jwtDecode(token); // Decode the JWT
+            Role = decodedToken.Role; // Log the decoded token
+        } catch (error) {
+            console.error("Token decoding failed:", error);
+        }
+    } else {
+        console.log("No token found.");
+    }
 
-    // Fetch persons data based on the current searchQuery
     const { data, isLoading } = useQuery(['persons', currentPage, pageSize, searchQuery],
-        () => getAllUsers(currentPage, pageSize, searchQuery), {
+        () => getAllUsers(currentPage, pageSize, searchQuery, token), {
         keepPreviousData: true // Avoids empty content when switching pages
     });
 
@@ -59,7 +77,7 @@ export default function Homepage() {
             setCurrentPage(prev => prev - 1);
         }
     };
-
+    const navigate = useNavigate()
     return (
         <div className={Styles.Main}>
             <div className={Styles.Controls}>
@@ -79,20 +97,30 @@ export default function Homepage() {
                         Search
                     </Button>
                 </Flex>
-
-                <Button className={Styles.Button} onClick={onAddOpen} ml={4}>
-                    Add Person
-                </Button>
+                <Flex gap={2}>
+                    {Role === ROLE_ADMIN &&
+                        <>
+                            <Button className={Styles.Button} onClick={onAddOpen} ml={4}>
+                                Add Person
+                            </Button>
+                        </>
+                    }
+                    <Button className={Styles.Button4} onClick={() => dispatch(logoutAction())} ml={4}>
+                        Log out
+                    </Button>
+                </Flex>
             </div>
 
             <Flex gap={2} alignItems={'center'}>
                 <Flex gap={2} alignItems={'center'}>
-                    <Button className={Styles.Button} onClick={handlePrevPage} disabled={currentPage === 1}>
+                    <Button 
+                    className={currentPage === 1 ? Styles.Button3 : Styles.Button}
+                    onClick={handlePrevPage} disabled={currentPage === 1}>
                         Previous
                     </Button>
                     <span style={{ color: 'rgb(0 86 146)' }}>Page {currentPage}</span>
-                    <Button _disabled={true }  className={data?.maxPages ? Styles.Button3:Styles.Button} onClick={handleNextPage} disabled={currentPage === data?.maxPages}>
-                        Next 
+                    <Button _disabled={true} className={currentPage === data?.maxPages ? Styles.Button3 : Styles.Button} onClick={handleNextPage} disabled={currentPage === data?.maxPages}>
+                        Next
                     </Button>
                 </Flex>
                 <Select
@@ -131,7 +159,7 @@ export default function Homepage() {
                     <tbody>
                         {data?.users?.map((person, index) => (
                             <tr key={person.id} onClick={() => openDetailModal(person)}>
-                                <td>{index+1}</td>
+                                <td>{index + 1}</td>
                                 <td>{person.name}</td>
                                 <td>{person.surname}</td>
                                 <td>{person.fatherName}</td>
